@@ -1,0 +1,5 @@
+LiteNetLib
+Copyright (c) 2017 Ruslan Pyrch
+
+VCR OSD Mono Font
+Copyright (c) Riciery Leal
