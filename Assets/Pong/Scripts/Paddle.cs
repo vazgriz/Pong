@@ -23,8 +23,10 @@ public class Paddle : MonoBehaviour {
     }
 
     void Update() {
-        if (Mathf.Abs(moveDir) > 0.1f) {
-            velocity = velocity + moveDir * acceleration * Time.deltaTime;
+        float dir = Mathf.Clamp(moveDir, -1, 1);
+
+        if (Mathf.Abs(dir) > 0.1f) {
+            velocity = velocity + dir * acceleration * Time.deltaTime;
         } else {
             velocity = Mathf.Sign(velocity) * Mathf.Max(0, Mathf.Abs(velocity) - acceleration * Time.deltaTime);
         }
