@@ -11,11 +11,13 @@ public class Paddle : MonoBehaviour {
     float extents = 0;
 
     Rigidbody2D rb;
+    Collider2D col;
     float moveDir;
     float velocity;
 
     void Start() {
         rb = GetComponent<Rigidbody2D>();
+        col = GetComponent<Collider2D>();
     }
 
     public void Move(float dir) {
@@ -44,5 +46,20 @@ public class Paddle : MonoBehaviour {
         }
 
         rb.position = new Vector2(x, rb.position.y);
+    }
+
+    IEnumerator Debounce() {
+        col.enabled = false;
+        yield return new WaitForFixedUpdate();
+        yield return new WaitForFixedUpdate();
+        col.enabled = true;
+    }
+
+    void OnCollisionEnter(Collision collision) {
+        Ball ball = collision.gameObject.GetComponent<Ball>();
+
+        if (ball != null) {
+            StartCoroutine(Debounce());
+        }
     }
 }
