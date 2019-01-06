@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AIController : MonoBehaviour {
     [SerializeField]
-    GameObject ball;
+    GameObject ballGO;
 
     Transform trans;
     Paddle paddle;
@@ -15,7 +15,11 @@ public class AIController : MonoBehaviour {
         trans = GetComponent<Transform>();
         paddle = GetComponent<Paddle>();
         rb = GetComponent<Rigidbody2D>();
-        ballRB = ball.GetComponent<Rigidbody2D>();
+        ballRB = ballGO.GetComponent<Rigidbody2D>();
+    }
+
+    public void SetBall(GameObject ballGO) {
+        this.ballGO = ballGO;
     }
 
     void Update() {
