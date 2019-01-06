@@ -8,4 +8,10 @@ EditorBuildSettings:
   - enabled: 0
     path: 
     guid: 00000000000000000000000000000000
+  - enabled: 1
+    path: Assets/Pong/Scenes/Main.unity
+    guid: 70a062d381f857847b3cf3249cfe978f
+  - enabled: 1
+    path: Assets/Pong/Scenes/Game.unity
+    guid: f0fb13349f8473a4eb761945d775c3f8
   m_configObjects: {}
