@@ -15,22 +15,37 @@ public class AIController : MonoBehaviour {
         trans = GetComponent<Transform>();
         paddle = GetComponent<Paddle>();
         rb = GetComponent<Rigidbody2D>();
-        ballRB = ballGO.GetComponent<Rigidbody2D>();
     }
 
     public void SetBall(GameObject ballGO) {
         this.ballGO = ballGO;
+
+        if (ballGO != null) {
+            ballRB = ballGO.GetComponent<Rigidbody2D>();
+        } else {
+            ballRB = null;
+        }
     }
 
     void Update() {
-        if (Mathf.Sign(ballRB.velocity.y) == Mathf.Sign(rb.position.y)) {
-            float paddleX = rb.position.x;
-            float ballX = ballRB.position.x;
-            float correction = (ballX - paddleX) / trans.localScale.x;
+        if (ballGO == null) {
+            float paddleX = rb.position.x / trans.localScale.x;
 
-            paddle.Move(correction);
+            if (Mathf.Abs(paddleX) > 0.5f) {
+                paddle.Move(-paddleX);
+            } else {
+                paddle.Move(0);
+            }
         } else {
-            paddle.Move(0);
+            if (Mathf.Sign(ballRB.velocity.y) == Mathf.Sign(rb.position.y)) {
+                float paddleX = rb.position.x;
+                float ballX = ballRB.position.x;
+                float correction = (ballX - paddleX) / trans.localScale.x;
+
+                paddle.Move(correction);
+            } else {
+                paddle.Move(0);
+            }
         }
     }
 }
