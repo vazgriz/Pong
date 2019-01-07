@@ -9,6 +9,22 @@ public class UIManager : MonoBehaviour {
     GameObject mainMenuGO;
     [SerializeField]
     GameObject gameUIGO;
+    [SerializeField]
+    ScoreUI northScore;
+    [SerializeField]
+    ScoreUI southScore;
+
+    public ScoreUI NorthScore {
+        get {
+            return northScore;
+        }
+    }
+
+    public ScoreUI SouthScore {
+        get {
+            return southScore;
+        }
+    }
 
     public void StartGame() {
         mainMenuGO.SetActive(false);
