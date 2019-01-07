@@ -5,13 +5,15 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
     [SerializeField]
-    GameObject ui;
+    GameObject uiGO;
 
     Game currentGame;
+    UIManager ui;
 
     void Start() {
+        ui = uiGO.GetComponent<UIManager>();
         DontDestroyOnLoad(gameObject);
-        DontDestroyOnLoad(ui.gameObject);
+        DontDestroyOnLoad(uiGO.gameObject);
     }
 
     void UnloadGame() {
@@ -35,6 +37,7 @@ public class GameManager : MonoBehaviour {
 
     IEnumerator Load(int index) {
         yield return SceneManager.LoadSceneAsync(index);
+        ui.StartGame();
         currentGame?.Load();
     }
 }
