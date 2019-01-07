@@ -25,9 +25,8 @@ public class Ball : MonoBehaviour {
 
     Rigidbody2D rb;
 
-    void Start() {
+    void Awake() {
         rb = GetComponent<Rigidbody2D>();
-        Launch(1);
     }
 
     public void SetSeed(int seed) {
@@ -35,6 +34,8 @@ public class Ball : MonoBehaviour {
     }
 
     public void Launch(int direction) {
+        rb.position = new Vector2();
+
         float angle = Rand.Next(-launchAngle / 2, launchAngle / 2);
         Vector2 dir = RotatePoint(new Vector2(0, 1), angle);
 
