@@ -11,6 +11,9 @@ public class SinglePlayer : Game {
     GameObject ai;
     GameObject ball;
 
+    int playerScore;
+    int computerScore;
+
     public override void Load() {
         ai = Instantiate(aiPrefab);
         ball = Instantiate(ballPrefab);
@@ -21,5 +24,15 @@ public class SinglePlayer : Game {
     public override void Unload() {
         Destroy(ai);
         Destroy(ball);
+    }
+
+    public override void NotifyGoal(GoalPosition position) {
+        if (position == GoalPosition.North) {
+            playerScore++;
+            Manager.UI.SouthScore.SetScore(playerScore);
+        } else if (position == GoalPosition.South) {
+            computerScore++;
+            Manager.UI.NorthScore.SetScore(computerScore);
+        }
     }
 }

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,6 +9,11 @@ public class GameManager : MonoBehaviour {
     UIManager ui;
 
     public Game CurrentGame { get; private set; }
+    public UIManager UI {
+        get {
+            return ui;
+        }
+    }
 
     void Start() {
         if (ServiceLocator<GameManager>.Instance != null) {
@@ -51,6 +56,13 @@ public class GameManager : MonoBehaviour {
 }
 
 public abstract class Game : MonoBehaviour {
+    protected GameManager Manager { get; private set; }
+
+    void Awake() {
+        Manager = GetComponent<GameManager>();
+    }
+
     public abstract void Load();
     public abstract void Unload();
+    public abstract void NotifyGoal(GoalPosition position);
 }
