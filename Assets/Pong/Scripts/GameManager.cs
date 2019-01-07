@@ -44,6 +44,10 @@ public class GameManager : MonoBehaviour {
         var async = SceneManager.LoadSceneAsync(1);
     }
 
+    public void OpenMainMenu() {
+        StartCoroutine(LoadMainMenu());
+    }
+
     public void Quit() {
         Application.Quit();
     }
@@ -52,6 +56,12 @@ public class GameManager : MonoBehaviour {
         yield return SceneManager.LoadSceneAsync(index);
         ui.StartGame();
         CurrentGame?.Load();
+    }
+
+    IEnumerator LoadMainMenu() {
+        UnloadGame();
+        yield return SceneManager.LoadSceneAsync(0);
+        UI.EndGame();
     }
 }
 
