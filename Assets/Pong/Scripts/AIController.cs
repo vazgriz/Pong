@@ -23,10 +23,14 @@ public class AIController : MonoBehaviour {
     }
 
     void Update() {
-        float paddleX = rb.position.x;
-        float ballX = ballRB.position.x;
-        float correction = (ballX - paddleX) / trans.localScale.x;
+        if (Mathf.Sign(ballRB.velocity.y) == Mathf.Sign(rb.position.y)) {
+            float paddleX = rb.position.x;
+            float ballX = ballRB.position.x;
+            float correction = (ballX - paddleX) / trans.localScale.x;
 
-        paddle.Move(correction);
+            paddle.Move(correction);
+        } else {
+            paddle.Move(0);
+        }
     }
 }
