@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,10 +13,17 @@ public class SinglePlayer : Game {
 
     int playerScore;
     int computerScore;
+    ScoreUI playerScoreUI;
+    ScoreUI computerScoreUI;
 
     public override void Load() {
         ai = Instantiate(aiPrefab);
         ball = Instantiate(ballPrefab);
+
+        playerScoreUI = Manager.UI.SouthScore;
+        computerScoreUI = Manager.UI.NorthScore;
+        playerScoreUI.SetPlayerName("Player 1");
+        computerScoreUI.SetPlayerName("Computer");
 
         ai.GetComponent<AIController>().SetBall(ball);
     }
