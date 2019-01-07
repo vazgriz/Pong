@@ -49,6 +49,7 @@ public class SinglePlayer : Game {
             dir = -1;
         }
 
-        ball.Launch(dir);
+        float angle = ball.SelectAngle(dir);
+        ball.Launch(angle);
     }
 }

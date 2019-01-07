@@ -33,15 +33,19 @@ public class Ball : MonoBehaviour {
         Rand = new Random(seed);
     }
 
-    public void Launch(int direction) {
-        rb.position = new Vector2();
-
+    public float SelectAngle(int direction) {
         float angle = Rand.Next(-launchAngle / 2, launchAngle / 2);
-        Vector2 dir = RotatePoint(new Vector2(0, 1), angle);
 
         if (direction < 0) {
-            dir *= -1;
+            angle += 180f;
         }
+
+        return angle;
+    }
+
+    public void Launch(float angle) {
+        rb.position = new Vector2();
+        Vector2 dir = RotatePoint(new Vector2(0, 1), angle);
 
         rb.velocity = dir * launchVelocity;
     }
