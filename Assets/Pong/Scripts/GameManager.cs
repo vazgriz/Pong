@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -6,9 +6,9 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour {
     [SerializeField]
     GameObject uiGO;
-
-    Game currentGame;
     UIManager ui;
+
+    public Game CurrentGame { get; private set; }
 
     void Start() {
         if (ServiceLocator<GameManager>.Instance != null) {
@@ -25,12 +25,12 @@ public class GameManager : MonoBehaviour {
     }
 
     void UnloadGame() {
-        currentGame?.Unload();
+        CurrentGame?.Unload();
     }
 
     public void LoadSinglePlayer() {
         UnloadGame();
-        currentGame = GetComponent<SinglePlayer>();
+        CurrentGame = GetComponent<SinglePlayer>();
         StartCoroutine(Load(1));
     }
 
@@ -46,7 +46,7 @@ public class GameManager : MonoBehaviour {
     IEnumerator Load(int index) {
         yield return SceneManager.LoadSceneAsync(index);
         ui.StartGame();
-        currentGame?.Load();
+        CurrentGame?.Load();
     }
 }
 
