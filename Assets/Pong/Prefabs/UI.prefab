@@ -294,6 +294,7 @@ MonoBehaviour:
   gameUIGO: {fileID: 5529409800889208671}
   northScore: {fileID: 2895416785090579092}
   southScore: {fileID: 365505136294372839}
+  arrow: {fileID: 6974483345583907097}
 --- !u!1 &3552843825122926457
 GameObject:
   m_ObjectHideFlags: 0

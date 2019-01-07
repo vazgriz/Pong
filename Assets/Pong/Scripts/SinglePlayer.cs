@@ -11,6 +11,7 @@ public class SinglePlayer : Game {
     GameObject ai;
     GameObject ballGO;
     Ball ball;
+    RectTransform arrow;
 
     int playerScore;
     int computerScore;
@@ -24,12 +25,13 @@ public class SinglePlayer : Game {
 
         ai.GetComponent<AIController>().SetBall(ballGO);
 
+        arrow = Manager.UI.Arrow;
         playerScoreUI = Manager.UI.SouthScore;
         computerScoreUI = Manager.UI.NorthScore;
         playerScoreUI.SetPlayerName("Player 1");
         computerScoreUI.SetPlayerName("Computer");
 
-        ball.Launch(1);
+        StartCoroutine(LaunchBall(1));
     }
 
     public override void Unload() {
@@ -49,7 +51,21 @@ public class SinglePlayer : Game {
             dir = -1;
         }
 
+        StartCoroutine(LaunchBall(dir));
+    }
+
+    IEnumerator LaunchBall(int dir) {
         float angle = ball.SelectAngle(dir);
+        arrow.gameObject.SetActive(true);
+        arrow.localEulerAngles = new Vector3(0, 0, angle);
+        ai.GetComponent<AIController>().SetBall(null);
+        ballGO.SetActive(false);
+
+        yield return new WaitForSeconds(1);
+
+        arrow.gameObject.SetActive(false);
+        ai.GetComponent<AIController>().SetBall(ballGO);
+        ballGO.SetActive(true);
         ball.Launch(angle);
     }
 }

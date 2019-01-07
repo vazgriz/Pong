@@ -13,6 +13,8 @@ public class UIManager : MonoBehaviour {
     ScoreUI northScore;
     [SerializeField]
     ScoreUI southScore;
+    [SerializeField]
+    RectTransform arrow;
 
     public ScoreUI NorthScore {
         get {
@@ -23,6 +25,12 @@ public class UIManager : MonoBehaviour {
     public ScoreUI SouthScore {
         get {
             return southScore;
+        }
+    }
+
+    public RectTransform Arrow {
+        get {
+            return arrow;
         }
     }
 
