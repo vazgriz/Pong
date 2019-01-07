@@ -29,9 +29,14 @@ public class SinglePlayer : Game {
         playerScoreUI = Manager.UI.SouthScore;
         computerScoreUI = Manager.UI.NorthScore;
         playerScoreUI.SetPlayerName("Player 1");
+        playerScoreUI.SetScore(0);
         computerScoreUI.SetPlayerName("Computer");
+        computerScoreUI.SetScore(0);
 
         StartCoroutine(LaunchBall(1));
+
+        playerScore = 0;
+        computerScore = 0;
     }
 
     public override void Unload() {
@@ -51,7 +56,17 @@ public class SinglePlayer : Game {
             dir = -1;
         }
 
-        StartCoroutine(LaunchBall(dir));
+        if (playerScore >= 5) {
+            Manager.UI.Message.SetText("You win!");
+            Manager.UI.Message.Show();
+            ballGO.SetActive(false);
+        } else if (computerScore >= 5) {
+            Manager.UI.Message.SetText("You lose!");
+            Manager.UI.Message.Show();
+            ballGO.SetActive(false);
+        } else {
+            StartCoroutine(LaunchBall(dir));
+        }
     }
 
     IEnumerator LaunchBall(int dir) {
