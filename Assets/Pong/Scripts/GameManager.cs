@@ -11,6 +11,14 @@ public class GameManager : MonoBehaviour {
     UIManager ui;
 
     void Start() {
+        if (ServiceLocator<GameManager>.Instance != null) {
+            Destroy(gameObject);
+            Destroy(uiGO);
+            return;
+        }
+
+        ServiceLocator<GameManager>.Instance = this;
+
         ui = uiGO.GetComponent<UIManager>();
         DontDestroyOnLoad(gameObject);
         DontDestroyOnLoad(uiGO.gameObject);
