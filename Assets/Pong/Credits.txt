@@ -3,3 +3,5 @@ Copyright (c) 2017 Ruslan Pyrch
 
 VCR OSD Mono Font
 Copyright (c) Riciery Leal
+
+Game Icons pack by Kenney Vleugels
