@@ -44,6 +44,7 @@ public class Ball : MonoBehaviour {
     }
 
     public void Launch(float angle) {
+        GetComponent<Transform>().position = new Vector3();
         rb.position = new Vector2();
         Vector2 dir = RotatePoint(new Vector2(0, 1), angle);
 
