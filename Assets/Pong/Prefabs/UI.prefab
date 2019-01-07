@@ -297,6 +297,7 @@ MonoBehaviour:
   southScore: {fileID: 365505136294372839}
   arrow: {fileID: 6974483345583907097}
   message: {fileID: 8316104004026739340}
+  clockText: {fileID: 3518482022316132710}
 --- !u!1 &3552843825122926457
 GameObject:
   m_ObjectHideFlags: 0

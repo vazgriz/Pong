@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour {
     [SerializeField]
@@ -17,6 +18,8 @@ public class UIManager : MonoBehaviour {
     RectTransform arrow;
     [SerializeField]
     MessageUI message;
+    [SerializeField]
+    Text clockText;
 
     public ScoreUI NorthScore {
         get {
@@ -39,6 +42,12 @@ public class UIManager : MonoBehaviour {
     public MessageUI Message {
         get {
             return message;
+        }
+    }
+
+    public Text Clock {
+        get {
+            return clockText;
         }
     }
 

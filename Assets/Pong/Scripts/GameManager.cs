@@ -31,6 +31,7 @@ public class GameManager : MonoBehaviour {
 
     void UnloadGame() {
         CurrentGame?.Unload();
+        if (CurrentGame != null) CurrentGame.enabled = false;
     }
 
     public void LoadSinglePlayer() {
@@ -56,6 +57,7 @@ public class GameManager : MonoBehaviour {
         yield return SceneManager.LoadSceneAsync(index);
         ui.StartGame();
         CurrentGame?.Load();
+        if (CurrentGame != null) CurrentGame.enabled = true;
     }
 
     IEnumerator LoadMainMenu() {
@@ -71,6 +73,8 @@ public abstract class Game : MonoBehaviour {
     void Awake() {
         Manager = GetComponent<GameManager>();
     }
+
+    protected virtual void Update() { }
 
     public abstract void Load();
     public abstract void Unload();

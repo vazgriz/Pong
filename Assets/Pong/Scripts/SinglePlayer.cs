@@ -7,12 +7,16 @@ public class SinglePlayer : Game {
     GameObject aiPrefab;
     [SerializeField]
     GameObject ballPrefab;
+    [SerializeField]
+    float timeLimit = 180;
 
     GameObject ai;
     GameObject ballGO;
     Ball ball;
     RectTransform arrow;
 
+    float clock;
+    bool clockRunning;
     int playerScore;
     int computerScore;
     ScoreUI playerScoreUI;
@@ -35,6 +39,8 @@ public class SinglePlayer : Game {
 
         StartCoroutine(LaunchBall(1));
 
+        clock = timeLimit;
+        clockRunning = false;
         playerScore = 0;
         computerScore = 0;
     }
@@ -42,6 +48,25 @@ public class SinglePlayer : Game {
     public override void Unload() {
         Destroy(ai);
         Destroy(ballGO);
+    }
+
+    protected override void Update() {
+        if (clockRunning) {
+            clock -= Time.deltaTime;
+        }
+
+        if (clock <= 0f) {
+            if (playerScore == computerScore) {
+                EndGame("Draw");
+            } else if (playerScore > computerScore) {
+                EndGame("You win!");
+            } else if (computerScore > playerScore) {
+                EndGame("You lose!");
+            }
+        } else {
+            int time = Mathf.RoundToInt(clock);
+            Manager.UI.Clock.text = string.Format("{0}:{1:00}", time / 60, time % 60);
+        }
     }
 
     public override void NotifyGoal(GoalPosition position) {
@@ -57,16 +82,18 @@ public class SinglePlayer : Game {
         }
 
         if (playerScore >= 5) {
-            Manager.UI.Message.SetText("You win!");
-            Manager.UI.Message.Show();
-            ballGO.SetActive(false);
+            EndGame("You win!");
         } else if (computerScore >= 5) {
-            Manager.UI.Message.SetText("You lose!");
-            Manager.UI.Message.Show();
-            ballGO.SetActive(false);
+            EndGame("You lose!");
         } else {
             StartCoroutine(LaunchBall(dir));
         }
+    }
+
+    void EndGame(string message) {
+        Manager.UI.Message.SetText(message);
+        Manager.UI.Message.Show();
+        ballGO.SetActive(false);
     }
 
     IEnumerator LaunchBall(int dir) {
@@ -75,6 +102,7 @@ public class SinglePlayer : Game {
         arrow.localEulerAngles = new Vector3(0, 0, angle);
         ai.GetComponent<AIController>().SetBall(null);
         ballGO.SetActive(false);
+        clockRunning = false;
 
         yield return new WaitForSeconds(1);
 
@@ -82,5 +110,6 @@ public class SinglePlayer : Game {
         ai.GetComponent<AIController>().SetBall(ballGO);
         ballGO.SetActive(true);
         ball.Launch(angle);
+        clockRunning = true;
     }
 }
