@@ -1768,6 +1768,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameManager: {fileID: 0}
   mainMenuGO: {fileID: 3552843825642156748}
+  multiplayerMenuGO: {fileID: 706752390}
   gameUIGO: {fileID: 5529409800889208671}
   northScore: {fileID: 2895416785090579092}
   southScore: {fileID: 365505136294372839}
@@ -3084,8 +3085,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 814363598556240291, guid: f6196edacd16e7243b706c4f772dc772,
         type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OpenMultiPlayerMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 814363598556240291, guid: f6196edacd16e7243b706c4f772dc772,
+        type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 814363598556240291, guid: f6196edacd16e7243b706c4f772dc772,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 814363598556240291, guid: f6196edacd16e7243b706c4f772dc772,
         type: 3}
@@ -3262,7 +3273,7 @@ PrefabInstance:
     - target: {fileID: 814363598556240289, guid: f6196edacd16e7243b706c4f772dc772,
         type: 3}
       propertyPath: m_Name
-      value: Button
+      value: Back
       objectReference: {fileID: 0}
     - target: {fileID: 814363598556240288, guid: f6196edacd16e7243b706c4f772dc772,
         type: 3}
@@ -3368,6 +3379,31 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 814363598556240291, guid: f6196edacd16e7243b706c4f772dc772,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 814363598556240291, guid: f6196edacd16e7243b706c4f772dc772,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: CloseMultiplayerMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 814363598556240291, guid: f6196edacd16e7243b706c4f772dc772,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 814363598556240291, guid: f6196edacd16e7243b706c4f772dc772,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 814363598556240291, guid: f6196edacd16e7243b706c4f772dc772,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 814363598904847956, guid: f6196edacd16e7243b706c4f772dc772,
         type: 3}
@@ -3926,6 +3962,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 814363598556240291, guid: f6196edacd16e7243b706c4f772dc772,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 814363598904847956, guid: f6196edacd16e7243b706c4f772dc772,
         type: 3}

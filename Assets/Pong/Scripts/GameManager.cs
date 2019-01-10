@@ -7,6 +7,8 @@ public class GameManager : MonoBehaviour {
     [SerializeField]
     GameObject uiGO;
     UIManager ui;
+    [SerializeField]
+    NetworkManager network;
 
     public Game CurrentGame { get; private set; }
     public UIManager UI {
@@ -35,17 +37,23 @@ public class GameManager : MonoBehaviour {
     }
 
     public void LoadSinglePlayer() {
-        UnloadGame();
         CurrentGame = GetComponent<SinglePlayer>();
         StartCoroutine(Load(1));
     }
 
-    public void LoadMultiPlayer() {
-        UnloadGame();
-        var async = SceneManager.LoadSceneAsync(1);
+    public void OpenMultiPlayerMenu() {
+        ui.OpenMultiplayerMenu();
+        network.StartClient();
+        ((ClientEngine)network.Engine).FindServers();
+    }
+
+    public void CloseMultiplayerMenu() {
+        ui.CloseMultiplayerMenu();
+        network.EndNetworkConnection();
     }
 
     public void OpenMainMenu() {
+        UnloadGame();
         StartCoroutine(LoadMainMenu());
     }
 
