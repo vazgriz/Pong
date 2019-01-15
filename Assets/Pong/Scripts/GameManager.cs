@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour {
     public void OpenMultiPlayerMenu() {
         ui.OpenMultiplayerMenu();
         network.StartClient();
-        ((ClientEngine)network.Engine).FindServers();
+        network.FindServers();
     }
 
     public void CloseMultiplayerMenu() {

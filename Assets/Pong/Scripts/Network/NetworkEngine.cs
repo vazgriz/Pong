@@ -4,10 +4,12 @@ using UnityEngine;
 using LiteNetLib;
 
 public abstract class NetworkEngine : IDisposable {
+    protected NetworkManager Manager { get; private set; }
     public EventBasedNetListener Listener { get; private set; }
     public NetManager NetManager { get; private set; }
 
-    protected NetworkEngine() {
+    protected NetworkEngine(NetworkManager manager) {
+        Manager = manager;
         Listener = new EventBasedNetListener();
         NetManager = new NetManager(Listener, "Pong");
         NetManager.UnconnectedMessagesEnabled = true;
@@ -16,7 +18,8 @@ public abstract class NetworkEngine : IDisposable {
         NetManager.Start();
     }
 
-    protected NetworkEngine(int port) {
+    protected NetworkEngine(NetworkManager manager, int port) {
+        Manager = manager;
         Listener = new EventBasedNetListener();
         NetManager = new NetManager(Listener, "Pong");
         NetManager.UnconnectedMessagesEnabled = true;

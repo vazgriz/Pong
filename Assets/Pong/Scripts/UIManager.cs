@@ -70,4 +70,12 @@ public class UIManager : MonoBehaviour {
     public void CloseMultiplayerMenu() {
         multiplayerMenuGO.SetActive(false);
     }
+
+    public void ResetServers() {
+        Debug.Log("Reset");
+    }
+
+    public void AddServer(LiteNetLib.NetEndPoint endpoint, string serverName) {
+        Debug.Log(string.Format("{1} ({0})", endpoint, serverName));
+    }
 }
