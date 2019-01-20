@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using LiteNetLib;
@@ -11,6 +11,7 @@ public class ClientEngine : NetworkEngine {
 
     public override void Dispose() {
         Listener.NetworkReceiveUnconnectedEvent -= OnDiscoveryResponse;
+        base.Dispose();
     }
 
     public void FindServers() {
