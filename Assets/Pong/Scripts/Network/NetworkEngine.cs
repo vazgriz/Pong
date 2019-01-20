@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using LiteNetLib;
@@ -43,6 +43,7 @@ public abstract class NetworkEngine : IDisposable {
 
     protected void Send(NetPeer peer, NetworkMessage message, SendOptions options) {
         writer.Reset();
+        writer.Put((ushort)message.Type);
         message.Write(writer);
         peer.Send(writer, options);
     }
