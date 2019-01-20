@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using LiteNetLib;
+using LiteNetLib.Utils;
 
 public abstract class NetworkEngine : IDisposable {
     protected NetworkManager Manager { get; private set; }
     public EventBasedNetListener Listener { get; private set; }
     public NetManager NetManager { get; private set; }
+    NetDataWriter writer;
 
     protected NetworkEngine(NetworkManager manager) {
         Manager = manager;
@@ -14,7 +16,9 @@ public abstract class NetworkEngine : IDisposable {
         NetManager = new NetManager(Listener, "Pong");
         NetManager.UnconnectedMessagesEnabled = true;
         NetManager.DiscoveryEnabled = true;
+        writer = new NetDataWriter();
 
+        Listener.NetworkReceiveEvent += OnMessageReceived;
         NetManager.Start();
     }
 
@@ -29,10 +33,29 @@ public abstract class NetworkEngine : IDisposable {
     }
 
     public virtual void Dispose() {
+        Listener.NetworkReceiveEvent -= OnMessageReceived;
         NetManager.Stop();
     }
 
     public void Update() {
         NetManager.PollEvents();
     }
+
+    protected void Send(NetPeer peer, NetworkMessage message, SendOptions options) {
+        writer.Reset();
+        message.Write(writer);
+        peer.Send(writer, options);
+    }
+
+    void OnMessageReceived(NetPeer peer, NetDataReader reader) {
+        MessageType type = (MessageType)reader.GetUShort();
+        NetworkMessage message = NetworkMessage.Decode(type);
+
+        if (message != null) {
+            message.Read(reader);
+            OnMessageReceived(peer, message);
+        }
+    }
+
+    protected abstract void OnMessageReceived(NetPeer peer, NetworkMessage message);
 }

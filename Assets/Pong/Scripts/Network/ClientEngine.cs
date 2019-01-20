@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using LiteNetLib;
@@ -38,5 +38,29 @@ public class ClientEngine : NetworkEngine {
         message.Read(reader);
 
         Manager.AddServer(remoteEndPoint, message.ServerName);
+    }
+
+    public void Connect(NetEndPoint endpoint) {
+        NetPeer server = NetManager.Connect(endpoint);
+
+        SynMessage syn = new SynMessage();
+        syn.GameName = "Pong";
+        syn.MajorVersion = 1;
+        syn.MinorVersion = 0;
+
+        Send(server, syn, SendOptions.ReliableOrdered);
+    }
+
+    protected override void OnMessageReceived(NetPeer peer, NetworkMessage message) {
+        if (message is SynAckMessage synAck) {
+            AckMessage ack = new AckMessage();
+            Send(peer, ack, SendOptions.ReliableOrdered);
+        } else if (message is FinMessage fin) {
+            FinAckMessage finAck = new FinAckMessage();
+            Send(peer, finAck, SendOptions.ReliableOrdered);
+        } else if (message is FinAckMessage finAck) {
+            AckMessage ack = new AckMessage();
+            Send(peer, ack, SendOptions.ReliableOrdered);
+        }
     }
 }
