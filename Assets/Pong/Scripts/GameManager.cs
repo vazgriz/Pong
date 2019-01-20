@@ -44,7 +44,6 @@ public class GameManager : MonoBehaviour {
     public void OpenMultiPlayerMenu() {
         ui.OpenMultiplayerMenu();
         network.StartClient();
-        network.FindServers();
     }
 
     public void CloseMultiplayerMenu() {
@@ -52,8 +51,21 @@ public class GameManager : MonoBehaviour {
         network.EndNetworkConnection();
     }
 
+    public void HostMultiplayer() {
+        CurrentGame = GetComponent<Multiplayer>();
+        network.StartServer();
+        StartCoroutine(Load(1, true));
+    }
+
+    public void ConnectMultiplayer() {
+        CurrentGame = GetComponent<Multiplayer>();
+        network.StartClient();
+        StartCoroutine(Load(1, false));
+    }
+
     public void OpenMainMenu() {
         UnloadGame();
+        network.EndNetworkConnection();
         StartCoroutine(LoadMainMenu());
     }
 
@@ -72,6 +84,22 @@ public class GameManager : MonoBehaviour {
         UnloadGame();
         yield return SceneManager.LoadSceneAsync(0);
         UI.EndGame();
+    }
+
+    IEnumerator Load(int index, bool authoritative) {
+        yield return Load(index);
+        (CurrentGame as Multiplayer).StartGame(authoritative);
+
+        if (!authoritative) {
+            try {
+                (network.Engine as ClientEngine).Connect(UI.ConnectIP);
+            } catch (System.Net.Sockets.SocketException e) {
+                UI.Message.SetText("Could not connect");
+                UI.Message.Show();
+                UnloadGame();
+                network.EndNetworkConnection();
+            }
+        }
     }
 }
 

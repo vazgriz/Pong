@@ -1,8 +1,15 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using LiteNetLib;
 using LiteNetLib.Utils;
+
+public enum ConnectionStatus {
+    Unconnected,
+    Connecting,
+    Connected,
+    Disconnecting
+}
 
 public abstract class NetworkEngine : IDisposable {
     protected NetworkManager Manager { get; private set; }
@@ -10,7 +17,11 @@ public abstract class NetworkEngine : IDisposable {
     public NetManager NetManager { get; private set; }
     NetDataWriter writer;
 
-    protected NetworkEngine(NetworkManager manager) {
+    public ConnectionStatus ConnectionStatus { get; protected set; }
+
+    protected NetworkEngine(NetworkManager manager) : this(manager, 0) { }
+
+    protected NetworkEngine(NetworkManager manager, int port) {
         Manager = manager;
         Listener = new EventBasedNetListener();
         NetManager = new NetManager(Listener, "Pong");
@@ -19,16 +30,6 @@ public abstract class NetworkEngine : IDisposable {
         writer = new NetDataWriter();
 
         Listener.NetworkReceiveEvent += OnMessageReceived;
-        NetManager.Start();
-    }
-
-    protected NetworkEngine(NetworkManager manager, int port) {
-        Manager = manager;
-        Listener = new EventBasedNetListener();
-        NetManager = new NetManager(Listener, "Pong");
-        NetManager.UnconnectedMessagesEnabled = true;
-        NetManager.DiscoveryEnabled = true;
-
         NetManager.Start(port);
     }
 
@@ -37,8 +38,10 @@ public abstract class NetworkEngine : IDisposable {
         NetManager.Stop();
     }
 
-    public void Update() {
+    public void InternalUpdate() {
         NetManager.PollEvents();
+        Update();
+        NetManager.Flush();
     }
 
     protected void Send(NetPeer peer, NetworkMessage message, SendOptions options) {
@@ -59,4 +62,6 @@ public abstract class NetworkEngine : IDisposable {
     }
 
     protected abstract void OnMessageReceived(NetPeer peer, NetworkMessage message);
+    protected abstract void Update();
+    public abstract void Disconnect();
 }

@@ -22,6 +22,10 @@ public class UIManager : MonoBehaviour {
     MessageUI message;
     [SerializeField]
     Text clockText;
+    [SerializeField]
+    InputField playerName;
+    [SerializeField]
+    InputField connectIP;
 
     public ScoreUI NorthScore {
         get {
@@ -50,6 +54,18 @@ public class UIManager : MonoBehaviour {
     public Text Clock {
         get {
             return clockText;
+        }
+    }
+
+    public string PlayerName {
+        get {
+            return playerName.text;
+        }
+    }
+
+    public string ConnectIP {
+        get {
+            return connectIP.text;
         }
     }
 

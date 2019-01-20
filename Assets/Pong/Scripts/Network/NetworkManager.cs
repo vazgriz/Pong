@@ -6,11 +6,18 @@ using LiteNetLib;
 public class NetworkManager : MonoBehaviour {
     [SerializeField]
     UIManager ui;
+    [SerializeField]
+    GameManager gameManager;
 
     public NetworkEngine Engine { get; private set; }
+    public GameManager GameManager {
+        get {
+            return gameManager;
+        }
+    }
 
     void Update() {
-        Engine?.Update();
+        Engine?.InternalUpdate();
     }
 
     public void StartClient() {

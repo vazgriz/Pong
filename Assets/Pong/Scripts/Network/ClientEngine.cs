@@ -5,6 +5,10 @@ using LiteNetLib;
 using LiteNetLib.Utils;
 
 public class ClientEngine : NetworkEngine {
+    float connectDeadline;
+    float disconnectDeadline;
+    NetPeer server;
+
     public ClientEngine(NetworkManager manager) : base(manager) {
         Listener.NetworkReceiveUnconnectedEvent += OnDiscoveryResponse;
     }
@@ -40,27 +44,66 @@ public class ClientEngine : NetworkEngine {
         Manager.AddServer(remoteEndPoint, message.ServerName);
     }
 
-    public void Connect(NetEndPoint endpoint) {
-        NetPeer server = NetManager.Connect(endpoint);
+    public void Connect(string address) {
+        server = NetManager.Connect(address, 4444);
 
         SynMessage syn = new SynMessage();
+        syn.PlayerName = Manager.GameManager.UI.PlayerName;
         syn.GameName = "Pong";
         syn.MajorVersion = 1;
         syn.MinorVersion = 0;
 
         Send(server, syn, SendOptions.ReliableOrdered);
+        NetManager.Flush();
+        ConnectionStatus = ConnectionStatus.Connecting;
+        connectDeadline = Time.time + 5;
     }
 
     protected override void OnMessageReceived(NetPeer peer, NetworkMessage message) {
         if (message is SynAckMessage synAck) {
+            (Manager.GameManager.CurrentGame as Multiplayer).SetRemoteName(synAck.PlayerName);
+
             AckMessage ack = new AckMessage();
             Send(peer, ack, SendOptions.ReliableOrdered);
+            ConnectionStatus = ConnectionStatus.Connected;
+            Manager.GameManager.UI.Message.Hide();
+        } else if (message is AckMessage) {
+            if (ConnectionStatus == ConnectionStatus.Connecting) {
+                ConnectionStatus = ConnectionStatus.Connected;
+            } else if (ConnectionStatus == ConnectionStatus.Disconnecting) {
+                ConnectionStatus = ConnectionStatus.Unconnected;
+            }
         } else if (message is FinMessage fin) {
             FinAckMessage finAck = new FinAckMessage();
             Send(peer, finAck, SendOptions.ReliableOrdered);
+            ConnectionStatus = ConnectionStatus.Disconnecting;
         } else if (message is FinAckMessage finAck) {
             AckMessage ack = new AckMessage();
             Send(peer, ack, SendOptions.ReliableOrdered);
+
+            if (ConnectionStatus == ConnectionStatus.Disconnecting) {
+                ConnectionStatus = ConnectionStatus.Unconnected;
+            }
         }
+    }
+
+    protected override void Update() {
+        if (ConnectionStatus == ConnectionStatus.Connecting && connectDeadline < Time.time) {
+            ConnectionStatus = ConnectionStatus.Unconnected;
+            Manager.GameManager.UI.Message.SetText("Failed to connect");
+            Manager.GameManager.UI.Message.Show();
+        }
+
+        if (ConnectionStatus == ConnectionStatus.Disconnecting && disconnectDeadline < Time.time) {
+            ConnectionStatus = ConnectionStatus.Unconnected;
+            Manager.GameManager.OpenMainMenu();
+        }
+    }
+
+    public override void Disconnect() {
+        Send(server, new FinMessage(), SendOptions.ReliableOrdered);
+        ConnectionStatus = ConnectionStatus.Disconnecting;
+        disconnectDeadline = Time.time + 5;
+        Manager.GameManager.OpenMainMenu();
     }
 }

@@ -78,6 +78,7 @@ public class DiscoverResponseMessage : NetworkMessage {
 }
 
 public class SynMessage : NetworkMessage {
+    public string PlayerName { get; set; }
     public string GameName { get; set; }
     public int MajorVersion { get; set; }
     public int MinorVersion { get; set; }
@@ -87,12 +88,14 @@ public class SynMessage : NetworkMessage {
     }
 
     public override void Read(NetDataReader reader) {
+        PlayerName = reader.GetString();
         GameName = reader.GetString();
         MajorVersion = reader.GetInt();
         MinorVersion = reader.GetInt();
     }
 
     public override void Write(NetDataWriter writer) {
+        writer.Put(PlayerName);
         writer.Put(GameName);
         writer.Put(MajorVersion);
         writer.Put(MinorVersion);
@@ -100,16 +103,18 @@ public class SynMessage : NetworkMessage {
 }
 
 public class SynAckMessage : NetworkMessage {
+    public string PlayerName { get; set; }
+
     public SynAckMessage() : base(MessageType.SynAck) {
 
     }
 
     public override void Read(NetDataReader reader) {
-        //nothing
+        PlayerName = reader.GetString();
     }
 
     public override void Write(NetDataWriter writer) {
-        //nothing
+        writer.Put(PlayerName);
     }
 }
 
