@@ -724,7 +724,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Enter server name
+  m_Text: Enter player name
 --- !u!1 &1056397922
 GameObject:
   m_ObjectHideFlags: 0
@@ -1775,6 +1775,8 @@ MonoBehaviour:
   arrow: {fileID: 6974483345583907097}
   message: {fileID: 8316104004026739340}
   clockText: {fileID: 3518482022316132710}
+  playerName: {fileID: 656089126}
+  connectIP: {fileID: 2074811127}
 --- !u!1 &3552843825122926457
 GameObject:
   m_ObjectHideFlags: 0
@@ -3535,6 +3537,31 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 814363598556240291, guid: f6196edacd16e7243b706c4f772dc772,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 814363598556240291, guid: f6196edacd16e7243b706c4f772dc772,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: FindServers
+      objectReference: {fileID: 0}
+    - target: {fileID: 814363598556240291, guid: f6196edacd16e7243b706c4f772dc772,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 814363598556240291, guid: f6196edacd16e7243b706c4f772dc772,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 814363598556240291, guid: f6196edacd16e7243b706c4f772dc772,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 814363598904847956, guid: f6196edacd16e7243b706c4f772dc772,
         type: 3}
       propertyPath: m_Text
@@ -3671,6 +3698,31 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 814363598556240291, guid: f6196edacd16e7243b706c4f772dc772,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 814363598556240291, guid: f6196edacd16e7243b706c4f772dc772,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ConnectMultiplayer
+      objectReference: {fileID: 0}
+    - target: {fileID: 814363598556240291, guid: f6196edacd16e7243b706c4f772dc772,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 814363598556240291, guid: f6196edacd16e7243b706c4f772dc772,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 814363598556240291, guid: f6196edacd16e7243b706c4f772dc772,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 814363598904847956, guid: f6196edacd16e7243b706c4f772dc772,
         type: 3}
       propertyPath: m_Text
@@ -3806,6 +3858,31 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 814363598556240291, guid: f6196edacd16e7243b706c4f772dc772,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 814363598556240291, guid: f6196edacd16e7243b706c4f772dc772,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: HostMultiplayer
+      objectReference: {fileID: 0}
+    - target: {fileID: 814363598556240291, guid: f6196edacd16e7243b706c4f772dc772,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 814363598556240291, guid: f6196edacd16e7243b706c4f772dc772,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 814363598556240291, guid: f6196edacd16e7243b706c4f772dc772,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 814363598904847956, guid: f6196edacd16e7243b706c4f772dc772,
         type: 3}
