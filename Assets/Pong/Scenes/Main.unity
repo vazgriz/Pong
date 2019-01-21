@@ -230,6 +230,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c53822cad86732047a699a65e44a9b1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  remotePaddlePrefab: {fileID: 0}
   ballPrefab: {fileID: 2965111024636671219, guid: 2be1c219f7eece24ea1530c247bcf5d2,
     type: 3}
   timeLimit: 180
@@ -339,6 +340,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3251833165141154185, guid: 2b774ec853cf0c14e9cd75a7b74fd875,
+        type: 3}
+      propertyPath: paddlePrefab
+      value: 
+      objectReference: {fileID: 1007424654811858150, guid: 07c4c173943143c4abdb37eaf3dcc2fe,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2b774ec853cf0c14e9cd75a7b74fd875, type: 3}
 --- !u!1001 &3552843824954859312

@@ -4,12 +4,15 @@ using UnityEngine;
 
 public class SinglePlayer : Game {
     [SerializeField]
+    GameObject paddlePrefab;
+    [SerializeField]
     GameObject aiPrefab;
     [SerializeField]
     GameObject ballPrefab;
     [SerializeField]
     float timeLimit = 180;
 
+    GameObject paddleGO;
     GameObject ai;
     GameObject ballGO;
     Ball ball;
@@ -23,6 +26,7 @@ public class SinglePlayer : Game {
     ScoreUI computerScoreUI;
 
     public override void Load() {
+        paddleGO = Instantiate(paddlePrefab);
         ai = Instantiate(aiPrefab);
         ballGO = Instantiate(ballPrefab);
         ball = ballGO.GetComponent<Ball>();
