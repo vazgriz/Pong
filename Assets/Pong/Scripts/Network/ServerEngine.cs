@@ -47,6 +47,7 @@ public class ServerEngine : NetworkEngine {
                 multiplayer.StartGame();
             } else if (ConnectionStatus == ConnectionStatus.Disconnecting) {
                 ConnectionStatus = ConnectionStatus.Unconnected;
+                FinishDisconnect();
             }
         } else if (message is FinMessage fin) {
             FinAckMessage finAck = new FinAckMessage();
@@ -58,6 +59,7 @@ public class ServerEngine : NetworkEngine {
             Send(ack, SendOptions.ReliableOrdered);
             if (ConnectionStatus == ConnectionStatus.Disconnecting) {
                 ConnectionStatus = ConnectionStatus.Unconnected;
+                FinishDisconnect();
             }
         } else if (message is PaddleUpdateMessage update) {
             (Manager.GameManager.CurrentGame as Multiplayer).HandlePaddleUpdate(update);
@@ -72,11 +74,13 @@ public class ServerEngine : NetworkEngine {
 
         if (ConnectionStatus == ConnectionStatus.Disconnecting && disconnectDeadline < Time.time) {
             ConnectionStatus = ConnectionStatus.Unconnected;
-            Manager.GameManager.OpenMainMenu();
+            FinishDisconnect();
         }
     }
 
     public override void Disconnect() {
         Send(client, new FinMessage(), SendOptions.ReliableOrdered);
+        ConnectionStatus = ConnectionStatus.Disconnecting;
+        disconnectDeadline = Time.time + 5;
     }
 }

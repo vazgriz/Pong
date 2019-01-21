@@ -80,4 +80,8 @@ public class Ball : MonoBehaviour {
         point.y = yNew;
         return point;
     }
+
+    public void Freeze() {
+        rb.velocity = new Vector2();
+    }
 }

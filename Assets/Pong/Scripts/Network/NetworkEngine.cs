@@ -30,11 +30,11 @@ public abstract class NetworkEngine : IDisposable {
         writer = new NetDataWriter();
 
         Listener.NetworkReceiveEvent += OnMessageReceived;
+        Listener.PeerDisconnectedEvent += OnDisconnected;
         NetManager.Start(port);
     }
 
     public virtual void Dispose() {
-        Listener.NetworkReceiveEvent -= OnMessageReceived;
         NetManager.Stop();
     }
 
@@ -66,4 +66,16 @@ public abstract class NetworkEngine : IDisposable {
     protected abstract void OnMessageReceived(NetPeer peer, NetworkMessage message);
     protected abstract void Update();
     public abstract void Disconnect();
+    protected void FinishDisconnect() {
+        Manager.GameManager.UI.Message.SetText("Disconnected");
+        Manager.GameManager.UI.Message.Show();
+        (Manager.GameManager.CurrentGame as Multiplayer).StopGame();
+        Manager.EndNetworkConnection();
+    }
+
+    void OnDisconnected(NetPeer peer, DisconnectInfo disconnectInfo) {
+        if (disconnectInfo.Reason == DisconnectReason.Timeout || disconnectInfo.Reason == DisconnectReason.DisconnectPeerCalled || disconnectInfo.Reason == DisconnectReason.RemoteConnectionClose) {
+            FinishDisconnect();
+        }
+    }
 }

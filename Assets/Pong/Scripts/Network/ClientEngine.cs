@@ -78,7 +78,7 @@ public class ClientEngine : NetworkEngine {
         } else if (message is AckMessage) {
             if (ConnectionStatus == ConnectionStatus.Disconnecting) {
                 ConnectionStatus = ConnectionStatus.Unconnected;
-                Manager.GameManager.OpenMainMenu();
+                FinishDisconnect();
             }
         } else if (message is FinMessage fin) {
             FinAckMessage finAck = new FinAckMessage();
@@ -91,6 +91,7 @@ public class ClientEngine : NetworkEngine {
 
             if (ConnectionStatus == ConnectionStatus.Disconnecting) {
                 ConnectionStatus = ConnectionStatus.Unconnected;
+                FinishDisconnect();
             }
         } else if (message is StartMessage) {
             (Manager.GameManager.CurrentGame as Multiplayer).StartGame();
@@ -112,7 +113,7 @@ public class ClientEngine : NetworkEngine {
 
         if (ConnectionStatus == ConnectionStatus.Disconnecting && disconnectDeadline < Time.time) {
             ConnectionStatus = ConnectionStatus.Unconnected;
-            Manager.GameManager.OpenMainMenu();
+            FinishDisconnect();
         }
     }
 

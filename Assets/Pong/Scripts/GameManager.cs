@@ -109,6 +109,10 @@ public class GameManager : MonoBehaviour {
             }
         }
     }
+
+    void OnApplicationQuit() {
+        Network.EndNetworkConnection();
+    }
 }
 
 public abstract class Game : MonoBehaviour {

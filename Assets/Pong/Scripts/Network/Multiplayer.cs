@@ -112,6 +112,11 @@ public class Multiplayer : Game {
         }
     }
 
+    public void StopGame() {
+        gameStarted = false;
+        ball.Freeze();
+    }
+
     protected override void Update() {
         if (!gameStarted) return;
 
