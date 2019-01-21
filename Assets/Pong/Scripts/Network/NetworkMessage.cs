@@ -12,7 +12,12 @@ public enum MessageType : ushort {
     SynAck,
     Ack,
     Fin,
-    FinAck
+    FinAck,
+    StartGame,
+    LaunchBall,
+    PaddleUpdate,
+    Goal,
+    EndGame,
 }
 
 public abstract class NetworkMessage {
@@ -34,6 +39,11 @@ public abstract class NetworkMessage {
             case MessageType.Ack: return new AckMessage();
             case MessageType.Fin: return new FinMessage();
             case MessageType.FinAck: return new FinAckMessage();
+            case MessageType.StartGame: return new StartMessage();
+            case MessageType.LaunchBall: return new LaunchBallMessage();
+            case MessageType.PaddleUpdate: return new PaddleUpdateMessage();
+            case MessageType.Goal: return new GoalMessage();
+            case MessageType.EndGame: return new EndGameMessage();
             default: return null;
         }
     }
@@ -157,5 +167,95 @@ public class FinAckMessage : NetworkMessage {
 
     public override void Write(NetDataWriter writer) {
         //nothing
+    }
+}
+
+public class StartMessage : NetworkMessage {
+    public StartMessage() : base(MessageType.StartGame) {
+
+    }
+
+    public override void Read(NetDataReader reader) {
+        //nothing
+    }
+
+    public override void Write(NetDataWriter writer) {
+        //nothing
+    }
+}
+
+public class LaunchBallMessage : NetworkMessage {
+    public float Angle { get; set; }
+    public float Time { get; set; }
+
+    public LaunchBallMessage() : base(MessageType.LaunchBall) {
+
+    }
+
+    public override void Read(NetDataReader reader) {
+        Angle = reader.GetFloat();
+        Time = reader.GetFloat();
+    }
+
+    public override void Write(NetDataWriter writer) {
+        writer.Put(Angle);
+        writer.Put(Time);
+    }
+}
+
+public class PaddleUpdateMessage : NetworkMessage {
+    public float Position { get; set; }
+    public float Velocity { get; set; }
+    public float Input { get; set; }
+
+    public PaddleUpdateMessage() : base(MessageType.PaddleUpdate) {
+
+    }
+
+    public override void Read(NetDataReader reader) {
+        Position = reader.GetFloat();
+        Velocity = reader.GetFloat();
+        Input = reader.GetFloat();
+    }
+
+    public override void Write(NetDataWriter writer) {
+        writer.Put(Position);
+        writer.Put(Velocity);
+        writer.Put(Input);
+    }
+}
+
+public class GoalMessage : NetworkMessage {
+    public Player Player { get; set; }
+    public float Time { get; set; }
+
+    public GoalMessage() : base(MessageType.Goal) {
+
+    }
+
+    public override void Read(NetDataReader reader) {
+        Player = (Player)reader.GetByte();
+        Time = reader.GetFloat();
+    }
+
+    public override void Write(NetDataWriter writer) {
+        writer.Put((byte)Player);
+        writer.Put(Time);
+    }
+}
+
+public class EndGameMessage : NetworkMessage {
+    public Player Winner { get; set; }
+
+    public EndGameMessage() : base(MessageType.EndGame) {
+
+    }
+
+    public override void Read(NetDataReader reader) {
+        Winner = (Player)reader.GetByte();
+    }
+
+    public override void Write(NetDataWriter writer) {
+        writer.Put((byte)Winner);
     }
 }

@@ -11,9 +11,17 @@ public class GameManager : MonoBehaviour {
     NetworkManager network;
 
     public Game CurrentGame { get; private set; }
+
     public UIManager UI {
         get {
             return ui;
+        }
+    }
+
+
+    public NetworkManager Network {
+        get {
+            return network;
         }
     }
 
@@ -88,7 +96,7 @@ public class GameManager : MonoBehaviour {
 
     IEnumerator Load(int index, bool authoritative) {
         yield return Load(index);
-        (CurrentGame as Multiplayer).StartGame(authoritative);
+        (CurrentGame as Multiplayer).InitGame(authoritative);
 
         if (!authoritative) {
             try {

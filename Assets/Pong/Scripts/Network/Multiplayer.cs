@@ -18,7 +18,9 @@ public class Multiplayer : Game {
     float timeLimit = 180f;
 
     GameObject localPaddleGO;
+    Paddle localPaddle;
     GameObject remotePaddleGO;
+    Paddle remotePaddle;
     GameObject ballGO;
     Ball ball;
     RectTransform arrow;
@@ -26,6 +28,7 @@ public class Multiplayer : Game {
     bool authoritative;
     float clock;
     bool clockRunning;
+    bool gameStarted;
     int localScore;
     int remoteScore;
     ScoreUI localScoreUI;
@@ -33,7 +36,9 @@ public class Multiplayer : Game {
 
     public override void Load() {
         localPaddleGO = Instantiate(localPaddlePrefab);
+        localPaddle = localPaddleGO.GetComponent<Paddle>();
         remotePaddleGO = Instantiate(remotePaddlePrefab);
+        remotePaddle = remotePaddleGO.GetComponent<Paddle>();
         ballGO = Instantiate(ballPrefab);
         ball = ballGO.GetComponent<Ball>();
         ballGO.SetActive(false);
@@ -59,7 +64,7 @@ public class Multiplayer : Game {
         Destroy(ballGO);
     }
 
-    public void StartGame(bool authoritative) {
+    public void InitGame(bool authoritative) {
         this.authoritative = authoritative;
         string localName = Manager.UI.PlayerName;
         if (localName == "") {
@@ -95,15 +100,39 @@ public class Multiplayer : Game {
         remoteScoreUI.SetPlayerName(remoteName);
     }
 
+    public void StartGame() {
+        gameStarted = true;
+        Manager.UI.Message.Hide();
+
+        if (authoritative) {
+            StartMessage start = new StartMessage();
+            Manager.Network.Engine.Send(start, LiteNetLib.SendOptions.ReliableOrdered);
+        }
+    }
+
     protected override void Update() {
+        if (!gameStarted) return;
+
         if (clockRunning) {
             clock -= Time.deltaTime;
         }
+        
+        PaddleUpdateMessage update = new PaddleUpdateMessage();
+        update.Position = localPaddle.Position;
+        update.Velocity = localPaddle.Velocity;
+        update.Input = localPaddle.MoveDir;
+
+        Manager.Network.Engine.Send(update, LiteNetLib.SendOptions.Sequenced);
     }
 
     public override void NotifyGoal(GoalPosition position) {
         if (authoritative) {
 
         }
+    }
+
+    public void HandlePaddleUpdate(PaddleUpdateMessage update) {
+        float input = -update.Input;
+        remotePaddle.Move(input);
     }
 }

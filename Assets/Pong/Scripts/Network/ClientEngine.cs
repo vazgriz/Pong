@@ -8,9 +8,11 @@ public class ClientEngine : NetworkEngine {
     float connectDeadline;
     float disconnectDeadline;
     NetPeer server;
+    Multiplayer multiplayer;
 
     public ClientEngine(NetworkManager manager) : base(manager) {
         Listener.NetworkReceiveUnconnectedEvent += OnDiscoveryResponse;
+        multiplayer = manager.GameManager.CurrentGame as Multiplayer;
     }
 
     public override void Dispose() {
@@ -74,15 +76,15 @@ public class ClientEngine : NetworkEngine {
             ConnectionStatus = ConnectionStatus.Connected;
             Manager.GameManager.UI.Message.Hide();
         } else if (message is AckMessage) {
-            if (ConnectionStatus == ConnectionStatus.Connecting) {
-                ConnectionStatus = ConnectionStatus.Connected;
-            } else if (ConnectionStatus == ConnectionStatus.Disconnecting) {
+            if (ConnectionStatus == ConnectionStatus.Disconnecting) {
                 ConnectionStatus = ConnectionStatus.Unconnected;
+                Manager.GameManager.OpenMainMenu();
             }
         } else if (message is FinMessage fin) {
             FinAckMessage finAck = new FinAckMessage();
             Send(finAck, SendOptions.ReliableOrdered);
             ConnectionStatus = ConnectionStatus.Disconnecting;
+            disconnectDeadline = Time.time + 5;
         } else if (message is FinAckMessage finAck) {
             AckMessage ack = new AckMessage();
             Send(ack, SendOptions.ReliableOrdered);
@@ -90,6 +92,10 @@ public class ClientEngine : NetworkEngine {
             if (ConnectionStatus == ConnectionStatus.Disconnecting) {
                 ConnectionStatus = ConnectionStatus.Unconnected;
             }
+        } else if (message is StartMessage) {
+            (Manager.GameManager.CurrentGame as Multiplayer).StartGame();
+        } else if (message is PaddleUpdateMessage update) {
+            (Manager.GameManager.CurrentGame as Multiplayer).HandlePaddleUpdate(update);
         }
     }
 
@@ -110,6 +116,5 @@ public class ClientEngine : NetworkEngine {
         Send(new FinMessage(), SendOptions.ReliableOrdered);
         ConnectionStatus = ConnectionStatus.Disconnecting;
         disconnectDeadline = Time.time + 5;
-        Manager.GameManager.OpenMainMenu();
     }
 }

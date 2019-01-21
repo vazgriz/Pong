@@ -12,8 +12,10 @@ public class Paddle : MonoBehaviour {
 
     Rigidbody2D rb;
     Collider2D col;
-    float moveDir;
-    float velocity;
+
+    public float MoveDir { get; private set; }
+    public float Position { get; set; }
+    public float Velocity { get; set; }
 
     void Start() {
         rb = GetComponent<Rigidbody2D>();
@@ -21,31 +23,31 @@ public class Paddle : MonoBehaviour {
     }
 
     public void Move(float dir) {
-        moveDir = dir;
+        MoveDir = dir;
     }
 
     void Update() {
-        float dir = Mathf.Clamp(moveDir, -1, 1);
+        float dir = Mathf.Clamp(MoveDir, -1, 1);
 
         if (Mathf.Abs(dir) > 0.1f) {
-            velocity = velocity + dir * acceleration * Time.deltaTime;
+            Velocity = Velocity + dir * acceleration * Time.deltaTime;
         } else {
-            velocity = Mathf.Sign(velocity) * Mathf.Max(0, Mathf.Abs(velocity) - acceleration * Time.deltaTime);
+            Velocity = Mathf.Sign(Velocity) * Mathf.Max(0, Mathf.Abs(Velocity) - acceleration * Time.deltaTime);
         }
 
-        velocity = Mathf.Clamp(velocity, -speed, speed);
+        Velocity = Mathf.Clamp(Velocity, -speed, speed);
 
-        float x = rb.position.x + velocity * Time.deltaTime;
+        Position = rb.position.x + Velocity * Time.deltaTime;
 
-        if (x <= -extents) {
-            x = -extents;
-            velocity = 0;
-        } else if (x >= extents) {
-            x = extents;
-            velocity = 0;
+        if (Position <= -extents) {
+            Position = -extents;
+            Velocity = 0;
+        } else if (Position >= extents) {
+            Position = extents;
+            Velocity = 0;
         }
 
-        rb.position = new Vector2(x, rb.position.y);
+        rb.position = new Vector2(Position, rb.position.y);
     }
 
     IEnumerator Debounce() {
