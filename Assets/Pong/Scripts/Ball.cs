@@ -23,6 +23,24 @@ public class Ball : MonoBehaviour {
         }
     }
 
+    public Vector2 Position {
+        get {
+            return rb.position;
+        }
+        set {
+            rb.position = value;
+        }
+    }
+
+    public Vector2 Velocity {
+        get {
+            return rb.velocity;
+        }
+        set {
+            rb.velocity = value;
+        }
+    }
+
     Rigidbody2D rb;
 
     void Awake() {
@@ -51,7 +69,7 @@ public class Ball : MonoBehaviour {
         rb.velocity = dir * launchVelocity;
     }
 
-    Vector2 RotatePoint(Vector2 point, float angle) {
+    public static Vector2 RotatePoint(Vector2 point, float angle) {
         float sin = Mathf.Sin(angle * Mathf.Deg2Rad);
         float cos = Mathf.Cos(angle * Mathf.Deg2Rad);
 

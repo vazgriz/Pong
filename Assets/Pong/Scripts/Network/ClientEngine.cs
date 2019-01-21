@@ -94,8 +94,12 @@ public class ClientEngine : NetworkEngine {
             }
         } else if (message is StartMessage) {
             (Manager.GameManager.CurrentGame as Multiplayer).StartGame();
-        } else if (message is PaddleUpdateMessage update) {
-            (Manager.GameManager.CurrentGame as Multiplayer).HandlePaddleUpdate(update);
+        } else if (message is PaddleUpdateMessage paddleUpdate) {
+            (Manager.GameManager.CurrentGame as Multiplayer).HandlePaddleUpdate(paddleUpdate);
+        } else if (message is BallUpdateMessage ballUpdate) {
+            (Manager.GameManager.CurrentGame as Multiplayer).HandleBallUpdate(ballUpdate);
+        } else if (message is LaunchBallMessage launch) {
+            (Manager.GameManager.CurrentGame as Multiplayer).HandleBallLaunch(launch);
         }
     }
 

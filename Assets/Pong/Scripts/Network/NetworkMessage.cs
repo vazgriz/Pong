@@ -16,6 +16,7 @@ public enum MessageType : ushort {
     StartGame,
     LaunchBall,
     PaddleUpdate,
+    BallUpdate,
     Goal,
     EndGame,
 }
@@ -42,6 +43,7 @@ public abstract class NetworkMessage {
             case MessageType.StartGame: return new StartMessage();
             case MessageType.LaunchBall: return new LaunchBallMessage();
             case MessageType.PaddleUpdate: return new PaddleUpdateMessage();
+            case MessageType.BallUpdate: return new BallUpdateMessage();
             case MessageType.Goal: return new GoalMessage();
             case MessageType.EndGame: return new EndGameMessage();
             default: return null;
@@ -222,6 +224,27 @@ public class PaddleUpdateMessage : NetworkMessage {
         writer.Put(Position);
         writer.Put(Velocity);
         writer.Put(Input);
+    }
+}
+
+public class BallUpdateMessage: NetworkMessage {
+    public Vector2 Position { get; set; }
+    public Vector2 Velocity { get; set; }
+
+    public BallUpdateMessage() : base(MessageType.BallUpdate) {
+
+    }
+    
+    public override void Read(NetDataReader reader) {
+        Position = new Vector2(reader.GetFloat(), reader.GetFloat());
+        Velocity = new Vector2(reader.GetFloat(), reader.GetFloat());
+    }
+
+    public override void Write(NetDataWriter writer) {
+        writer.Put(Position.x);
+        writer.Put(Position.y);
+        writer.Put(Velocity.x);
+        writer.Put(Velocity.y);
     }
 }
 

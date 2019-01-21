@@ -107,6 +107,8 @@ public class Multiplayer : Game {
         if (authoritative) {
             StartMessage start = new StartMessage();
             Manager.Network.Engine.Send(start, LiteNetLib.SendOptions.ReliableOrdered);
+
+            LaunchBall(1);
         }
     }
 
@@ -115,14 +117,22 @@ public class Multiplayer : Game {
 
         if (clockRunning) {
             clock -= Time.deltaTime;
+
+            if (authoritative) {
+                BallUpdateMessage ballUpdate = new BallUpdateMessage();
+                ballUpdate.Position = ball.Position;
+                ballUpdate.Velocity = ball.Velocity;
+
+                Manager.Network.Engine.Send(ballUpdate, LiteNetLib.SendOptions.Sequenced);
+            }
         }
         
-        PaddleUpdateMessage update = new PaddleUpdateMessage();
-        update.Position = localPaddle.Position;
-        update.Velocity = localPaddle.Velocity;
-        update.Input = localPaddle.MoveDir;
+        PaddleUpdateMessage paddleUpdate = new PaddleUpdateMessage();
+        paddleUpdate.Position = localPaddle.Position;
+        paddleUpdate.Velocity = localPaddle.Velocity;
+        paddleUpdate.Input = localPaddle.MoveDir;
 
-        Manager.Network.Engine.Send(update, LiteNetLib.SendOptions.Sequenced);
+        Manager.Network.Engine.Send(paddleUpdate, LiteNetLib.SendOptions.Sequenced);
     }
 
     public override void NotifyGoal(GoalPosition position) {
@@ -133,6 +143,57 @@ public class Multiplayer : Game {
 
     public void HandlePaddleUpdate(PaddleUpdateMessage update) {
         float input = -update.Input;
+        float position = -update.Position;
+        float velocity = -update.Velocity;
+
         remotePaddle.Move(input);
+
+        if (!authoritative) {
+            remotePaddle.Velocity = -velocity;
+
+            if (Mathf.Abs(remotePaddle.Position - position) > 0.25f) {
+                remotePaddle.Position = position;
+            }
+        }
+    }
+
+    public void HandleBallUpdate(BallUpdateMessage update) {
+        //transform into local space
+        Vector2 position = Ball.RotatePoint(update.Position, 180);
+        Vector2 velocity = Ball.RotatePoint(update.Velocity, 180);
+
+        ball.Position = position;
+        ball.Velocity = velocity;
+        ballGO.SetActive(true);
+    }
+
+    public void HandleBallLaunch(LaunchBallMessage launch) {
+        clock = launch.Time;
+        StartCoroutine(LaunchBall((launch.Angle + 540) % 360f));
+    }
+
+    void LaunchBall(int dir) {
+        float angle = ball.SelectAngle(dir);
+        StartCoroutine(LaunchBall(angle));
+    }
+
+    IEnumerator LaunchBall(float angle) {
+        arrow.gameObject.SetActive(true);
+        arrow.localEulerAngles = new Vector3(0, 0, angle);
+
+        if (authoritative) {
+            LaunchBallMessage launch = new LaunchBallMessage();
+            launch.Angle = angle;
+            launch.Time = clock;
+            
+            Manager.Network.Engine.Send(launch, LiteNetLib.SendOptions.ReliableOrdered);
+        }
+
+        yield return new WaitForSeconds(1);
+
+        arrow.gameObject.SetActive(false);
+        ballGO.SetActive(true);
+        ball.Launch(angle);
+        clockRunning = true;
     }
 }
