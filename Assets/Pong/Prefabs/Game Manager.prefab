@@ -93,7 +93,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c53822cad86732047a699a65e44a9b1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  remotePaddlePrefab: {fileID: 0}
+  localPaddlePrefab: {fileID: 1007424654811858150, guid: 07c4c173943143c4abdb37eaf3dcc2fe,
+    type: 3}
+  remotePaddlePrefab: {fileID: 7908448749515288837, guid: a9896d5cdf0610c40b4ffad0f10eb20b,
+    type: 3}
   ballPrefab: {fileID: 2965111024636671219, guid: 2be1c219f7eece24ea1530c247bcf5d2,
     type: 3}
   timeLimit: 180

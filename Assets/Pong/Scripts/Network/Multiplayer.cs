@@ -2,12 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum Player {
+    Server,
+    Client
+}
+
 public class Multiplayer : Game {
+    [SerializeField]
+    GameObject localPaddlePrefab = null;
+    [SerializeField]
+    GameObject remotePaddlePrefab = null;
     [SerializeField]
     GameObject ballPrefab = null;
     [SerializeField]
     float timeLimit = 180f;
-    
+
+    GameObject localPaddleGO;
+    GameObject remotePaddleGO;
     GameObject ballGO;
     Ball ball;
     RectTransform arrow;
@@ -21,6 +32,8 @@ public class Multiplayer : Game {
     ScoreUI remoteScoreUI;
 
     public override void Load() {
+        localPaddleGO = Instantiate(localPaddlePrefab);
+        remotePaddleGO = Instantiate(remotePaddlePrefab);
         ballGO = Instantiate(ballPrefab);
         ball = ballGO.GetComponent<Ball>();
         ballGO.SetActive(false);
