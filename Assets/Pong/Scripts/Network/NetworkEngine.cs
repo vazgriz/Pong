@@ -51,6 +51,8 @@ public abstract class NetworkEngine : IDisposable {
         peer.Send(writer, options);
     }
 
+    public abstract void Send(NetworkMessage message, SendOptions options);
+
     void OnMessageReceived(NetPeer peer, NetDataReader reader) {
         MessageType type = (MessageType)reader.GetUShort();
         NetworkMessage message = NetworkMessage.Decode(type);

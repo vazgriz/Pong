@@ -18,6 +18,10 @@ public class ClientEngine : NetworkEngine {
         base.Dispose();
     }
 
+    public override void Send(NetworkMessage message, SendOptions options) {
+        Send(server, message, options);
+    }
+
     public void FindServers() {
         DiscoverRequestMessage message = new DiscoverRequestMessage();
         message.GameName = "Pong";
@@ -53,18 +57,20 @@ public class ClientEngine : NetworkEngine {
         syn.MajorVersion = 1;
         syn.MinorVersion = 0;
 
-        Send(server, syn, SendOptions.ReliableOrdered);
+        Send(syn, SendOptions.ReliableOrdered);
         NetManager.Flush();
         ConnectionStatus = ConnectionStatus.Connecting;
         connectDeadline = Time.time + 5;
     }
 
     protected override void OnMessageReceived(NetPeer peer, NetworkMessage message) {
+        if (peer != server) return;
+
         if (message is SynAckMessage synAck) {
             (Manager.GameManager.CurrentGame as Multiplayer).SetRemoteName(synAck.PlayerName);
 
             AckMessage ack = new AckMessage();
-            Send(peer, ack, SendOptions.ReliableOrdered);
+            Send(ack, SendOptions.ReliableOrdered);
             ConnectionStatus = ConnectionStatus.Connected;
             Manager.GameManager.UI.Message.Hide();
         } else if (message is AckMessage) {
@@ -75,11 +81,11 @@ public class ClientEngine : NetworkEngine {
             }
         } else if (message is FinMessage fin) {
             FinAckMessage finAck = new FinAckMessage();
-            Send(peer, finAck, SendOptions.ReliableOrdered);
+            Send(finAck, SendOptions.ReliableOrdered);
             ConnectionStatus = ConnectionStatus.Disconnecting;
         } else if (message is FinAckMessage finAck) {
             AckMessage ack = new AckMessage();
-            Send(peer, ack, SendOptions.ReliableOrdered);
+            Send(ack, SendOptions.ReliableOrdered);
 
             if (ConnectionStatus == ConnectionStatus.Disconnecting) {
                 ConnectionStatus = ConnectionStatus.Unconnected;
@@ -101,7 +107,7 @@ public class ClientEngine : NetworkEngine {
     }
 
     public override void Disconnect() {
-        Send(server, new FinMessage(), SendOptions.ReliableOrdered);
+        Send(new FinMessage(), SendOptions.ReliableOrdered);
         ConnectionStatus = ConnectionStatus.Disconnecting;
         disconnectDeadline = Time.time + 5;
         Manager.GameManager.OpenMainMenu();

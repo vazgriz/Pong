@@ -18,25 +18,31 @@ public class ServerEngine : NetworkEngine {
         base.Dispose();
     }
 
+    public override void Send(NetworkMessage message, SendOptions options) {
+        Send(client, message, options);
+    }
+
     void OnPeerConnected(NetPeer peer) {
         client = peer;
     }
 
     protected override void OnMessageReceived(NetPeer peer, NetworkMessage message) {
+        if (peer != client) return;
+
         if (message is SynMessage syn) {
             if (syn.GameName == "Pong" && syn.MajorVersion == 1 && syn.MinorVersion == 0) {
                 multiplayer.SetRemoteName(syn.PlayerName);
 
                 SynAckMessage synAck = new SynAckMessage();
                 synAck.PlayerName = Manager.GameManager.UI.PlayerName;
-                Send(peer, synAck, SendOptions.ReliableOrdered);
+                Send(synAck, SendOptions.ReliableOrdered);
             }
         } else if (message is FinMessage fin) {
             FinAckMessage finAck = new FinAckMessage();
-            Send(peer, finAck, SendOptions.ReliableOrdered);
+            Send(finAck, SendOptions.ReliableOrdered);
         } else if (message is FinAckMessage finAck) {
             AckMessage ack = new AckMessage();
-            Send(peer, ack, SendOptions.ReliableOrdered);
+            Send(ack, SendOptions.ReliableOrdered);
         }
     }
 
