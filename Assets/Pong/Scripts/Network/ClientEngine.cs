@@ -101,6 +101,10 @@ public class ClientEngine : NetworkEngine {
             (Manager.GameManager.CurrentGame as Multiplayer).HandleBallUpdate(ballUpdate);
         } else if (message is LaunchBallMessage launch) {
             (Manager.GameManager.CurrentGame as Multiplayer).HandleBallLaunch(launch);
+        } else if (message is GoalMessage goal) {
+            (Manager.GameManager.CurrentGame as Multiplayer).HandleGoal(goal);
+        } else if (message is EndGameMessage endGame) {
+            (Manager.GameManager.CurrentGame as Multiplayer).HandleEndGame(endGame);
         }
     }
 

@@ -26,6 +26,7 @@ public class Multiplayer : Game {
     RectTransform arrow;
 
     bool authoritative;
+    Player localRole;
     float clock;
     bool clockRunning;
     bool gameStarted;
@@ -66,6 +67,13 @@ public class Multiplayer : Game {
 
     public void InitGame(bool authoritative) {
         this.authoritative = authoritative;
+
+        if (authoritative) {
+            localRole = Player.Server;
+        } else {
+            localRole = Player.Client;
+        }
+
         string localName = Manager.UI.PlayerName;
         if (localName == "") {
             if (authoritative) {
@@ -138,11 +146,48 @@ public class Multiplayer : Game {
         paddleUpdate.Input = localPaddle.MoveDir;
 
         Manager.Network.Engine.Send(paddleUpdate, LiteNetLib.SendOptions.Sequenced);
+
+        if (clock <= 0f) {
+            if (authoritative) {
+
+            }
+        } else {
+            int time = Mathf.Max(Mathf.RoundToInt(clock), 0);
+            Manager.UI.Clock.text = string.Format("{0}:{1:00}", time / 60, time % 60);
+        }
     }
 
     public override void NotifyGoal(GoalPosition position) {
         if (authoritative) {
+            if (position == GoalPosition.North) {
+                HandleGoal(Player.Server);
+            } else if (position == GoalPosition.South) {
+                HandleGoal(Player.Client);
+            }
+        } else {
+            ball.Freeze();
+            ballGO.SetActive(false);
+        }
+    }
 
+    void HandleGoal(Player player) {
+        int dir = UpdateScore(player);
+        clockRunning = false;
+
+        if (authoritative) {
+            GoalMessage goal = new GoalMessage();
+            goal.Player = player;
+            goal.Time = clock;
+
+            Manager.Network.Engine.Send(goal, LiteNetLib.SendOptions.ReliableOrdered);
+        }
+
+        if (localScore >= 5) {
+            EndGame(Player.Server);
+        } else if (remoteScore >= 5) {
+            EndGame(Player.Client);
+        } else {
+            LaunchBall(dir);
         }
     }
 
@@ -177,6 +222,31 @@ public class Multiplayer : Game {
         StartCoroutine(LaunchBall((launch.Angle + 540) % 360f));
     }
 
+    public void HandleGoal(GoalMessage goal) {
+        clock = goal.Time;
+        clockRunning = false;
+        UpdateScore(goal.Player);
+    }
+
+    public void HandleEndGame(EndGameMessage endGame) {
+        EndGame(endGame.Winner);
+    }
+
+    int UpdateScore(Player player) {
+        ball.Freeze();
+        ballGO.SetActive(false);
+
+        if (player == localRole) {
+            localScore++;
+            Manager.UI.SouthScore.SetScore(localScore);
+            return -1;
+        } else {
+            remoteScore++;
+            Manager.UI.NorthScore.SetScore(remoteScore);
+            return 1;
+        }
+    }
+
     void LaunchBall(int dir) {
         float angle = ball.SelectAngle(dir);
         StartCoroutine(LaunchBall(angle));
@@ -200,5 +270,22 @@ public class Multiplayer : Game {
         ballGO.SetActive(true);
         ball.Launch(angle);
         clockRunning = true;
+    }
+
+    void EndGame(Player winner) {
+        if (winner == localRole) {
+            Manager.UI.Message.SetText("You win!");
+        } else {
+            Manager.UI.Message.SetText("You lose!");
+        }
+
+        Manager.UI.Message.Show();
+
+        if (authoritative) {
+            EndGameMessage message = new EndGameMessage();
+            message.Winner = winner;
+
+            Manager.Network.Engine.Send(message, LiteNetLib.SendOptions.ReliableOrdered);
+        }
     }
 }
