@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -30,11 +30,12 @@ public class Multiplayer : Game {
     Player localRole;
     float clock;
     bool clockRunning;
-    bool gameStarted;
     int localScore;
     int remoteScore;
     ScoreUI localScoreUI;
     ScoreUI remoteScoreUI;
+
+    public bool GameRunning { get; private set; }
 
     public override void Load() {
         localPaddleGO = Instantiate(localPaddlePrefab);
@@ -110,7 +111,7 @@ public class Multiplayer : Game {
     }
 
     public void StartGame() {
-        gameStarted = true;
+        GameRunning = true;
         Manager.UI.Message.Hide();
 
         if (authoritative) {
@@ -122,13 +123,13 @@ public class Multiplayer : Game {
     }
 
     public void StopGame() {
-        gameStarted = false;
+        GameRunning = false;
         clockRunning = false;
         ball.Freeze();
     }
 
     protected override void Update() {
-        if (!gameStarted) return;
+        if (!GameRunning) return;
 
         if (clockRunning) {
             clock -= Time.deltaTime;
@@ -216,7 +217,7 @@ public class Multiplayer : Game {
     }
 
     public void HandleBallUpdate(BallUpdateMessage update) {
-        if (!gameStarted) return;
+        if (!GameRunning) return;
 
         //transform into local space
         Vector2 position = Ball.RotatePoint(update.Position, 180);

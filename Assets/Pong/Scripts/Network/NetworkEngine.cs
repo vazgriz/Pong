@@ -67,8 +67,10 @@ public abstract class NetworkEngine : IDisposable {
     protected abstract void Update();
     public abstract void Disconnect();
     protected void FinishDisconnect() {
-        Manager.GameManager.UI.Message.SetText("Disconnected");
-        Manager.GameManager.UI.Message.Show();
+        if ((Manager.GameManager.CurrentGame as Multiplayer).GameRunning) {
+            Manager.GameManager.UI.Message.SetText("Disconnected");
+            Manager.GameManager.UI.Message.Show();
+        }
         (Manager.GameManager.CurrentGame as Multiplayer).StopGame();
         Manager.EndNetworkConnection();
     }
