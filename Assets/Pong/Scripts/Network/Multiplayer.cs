@@ -1,8 +1,9 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public enum Player {
+    None,
     Server,
     Client
 }
@@ -122,6 +123,7 @@ public class Multiplayer : Game {
 
     public void StopGame() {
         gameStarted = false;
+        clockRunning = false;
         ball.Freeze();
     }
 
@@ -149,7 +151,13 @@ public class Multiplayer : Game {
 
         if (clock <= 0f) {
             if (authoritative) {
-
+                if (localScore == remoteScore) {
+                    EndGame(Player.None);
+                } else if (localScore > remoteScore) {
+                    EndGame(Player.Server);
+                } else if (remoteScore > localScore) {
+                    EndGame(Player.Client);
+                }
             }
         } else {
             int time = Mathf.Max(Mathf.RoundToInt(clock), 0);
@@ -208,6 +216,8 @@ public class Multiplayer : Game {
     }
 
     public void HandleBallUpdate(BallUpdateMessage update) {
+        if (!gameStarted) return;
+
         //transform into local space
         Vector2 position = Ball.RotatePoint(update.Position, 180);
         Vector2 velocity = Ball.RotatePoint(update.Velocity, 180);
@@ -273,13 +283,16 @@ public class Multiplayer : Game {
     }
 
     void EndGame(Player winner) {
-        if (winner == localRole) {
+        if (winner == Player.None) {
+            Manager.UI.Message.SetText("Draw");
+        } else if (winner == localRole) {
             Manager.UI.Message.SetText("You win!");
         } else {
             Manager.UI.Message.SetText("You lose!");
         }
 
         Manager.UI.Message.Show();
+        StopGame();
 
         if (authoritative) {
             EndGameMessage message = new EndGameMessage();
